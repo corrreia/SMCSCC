@@ -1,0 +1,7 @@
+{
+	"SourcePawnLanguageServer.includesDirectories": [
+		"C:\\Users\\tomas\\sourcemodAPI\\addons\\sourcemod\\scripting\\include"
+	],
+	"SourcePawnLanguageServer.mainPath": "c:\\Users\\tomas\\Desktop\\SMCSCC\\scripting\\smcscc.sp",
+	"sourcepawn.MainPath": "c:\\Users\\tomas\\Desktop\\SMCSCC\\scripting\\smcscc.sp"
+}
