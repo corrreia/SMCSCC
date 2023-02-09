@@ -10,6 +10,7 @@ enum eWaitingType
 	WAITING_TAG	   = 1,
 	WAITING_WEAPON_SEED = 2,
 	WAITING_GLOVE_SEED = 3,
+	WAITING_STICKER_SEARCH = 4,
 }
 
 enum struct eGlove
@@ -18,6 +19,12 @@ enum struct eGlove
 	int	  skinDefIndex;
 	float floatValue;
 	int	  seed;
+}
+
+enum struct eSticker{
+	int	  	stickerDefIndex;
+	int 	wear;
+	int 	rotation;
 }
 
 enum struct eWeapon
@@ -29,6 +36,8 @@ enum struct eWeapon
 	int	  seed;
 	bool  statTrak;
 	int	  statTrakCount;
+
+	ArrayList arStickers; //up to 5
 }
 
 enum struct eClient
@@ -64,6 +73,16 @@ enum struct eClient
 			weapon.seed			  = -1;
 			weapon.statTrak		  = false;
 			weapon.statTrakCount  = 0;
+
+			weapon.arStickers = new ArrayList(sizeof(eSticker), 5);
+			for (int i = 0; i < 5; i++){
+				eSticker sticker;
+				sticker.stickerDefIndex = -1;
+				sticker.wear = 0;
+				sticker.rotation = 0;
+
+				weapon.arStickers.SetArray(i, sticker);
+			}
 
 			this.arWeaponsT.SetArray(j, weapon);
 			this.arWeaponsCT.SetArray(j, weapon);
@@ -779,14 +798,18 @@ enum struct eClient
 		
 		return 0;
 	}
+
+
+	// GETTERS AND SETTER FOR STICKERS
+
+	// int getStickerDefIndex(int team, int weaponNum, int pos){
+	// }
 }
 
 public void InitGValriables()
 {
 	//g_arClients			 = new ArrayList(sizeof(eClient), MAXPLAYERS + 1);
 	g_arKnifesDefIndexes = new ArrayList();
-
-	
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
