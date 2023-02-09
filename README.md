@@ -1,3 +1,5 @@
+## VERY EARLY DEVELOPMENT STATE!!!!
+
 <div align="center">
   <h1><code>SMCSCC</code></h1>
   <p>
