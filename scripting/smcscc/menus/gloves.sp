@@ -57,7 +57,7 @@ public Menu CreateGloveCustomMenu(int client, int team)
 	menu.AddItem(buffer, "Choose Glove");
 
 	//------------ (this part only is available if the glove has a skin	)
-	bool gloveHasSkin = GetGloveDefIndex(client, team) != -1;
+	bool gloveHasSkin = g_clients[client].getGloveDefIndex(team) != -1;
 
 	Format(buffer, sizeof(buffer), "%d_float", team);
 	menu.AddItem(buffer, "Change Float", gloveHasSkin ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -96,12 +96,7 @@ public int GloveCustomMenuHandler(Menu menu, MenuAction action, int client, int 
 			else if (StrEqual(buffer2[1], "seed"))
 			{
 				PrintToChat(client, "Write your desired seed into chat. To abort, type !abort.");
-
-				eClient clientStruct;
-				g_arClients.GetArray(client, clientStruct, sizeof(clientStruct));
-				clientStruct.waitingType = WAITING_G_SEED;
-				clientStruct.TN[0]		 = team;
-				g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
+				g_clients[client].setWaitingType(WAITING_GLOVE_SEED, team);
 			}
 		}
 		case MenuAction_Cancel:
@@ -158,7 +153,7 @@ public int GloveSkinMenuHandler(Menu menu, MenuAction action, int client, int se
 
 			if (gloveNum == -1)
 			{
-				SetGloveSkinDefIndex(client, team, -1, -1);
+				g_clients[client].setGloveSkinDefIndex(team, -1, -1);
 				CreateGloveCustomMenu(client, team).Display(client, 60);
 			}
 			else {
@@ -218,9 +213,7 @@ public int SubGloveSkinMenuHandler(Menu menu, MenuAction action, int client, int
 
 			PrintToChat(client, "team %d, gloveDefIndex %d, skinDefIndex %d", team, gloveDefIndex, skinDefIndex);
 
-			SetGloveSkinDefIndex(client, team, gloveDefIndex, skinDefIndex);
-			// SetGloveFloatValue(client, team, 0.0);
-			// SetGloveSeed(client, team, GetRandomInt(0, 8192));
+			g_clients[client].setGloveSkinDefIndex(team, gloveDefIndex, skinDefIndex);
 
 			RefreshGloves(client);
 
@@ -244,8 +237,8 @@ public Menu CreateGloveFloatMenu(int client, int team)
 	char  buffer[32];
 	Menu  menu	   = new Menu(GloveFloatMenuHandler);
 
-	float fValue   = GetGloveFloatValue(client, team);
-	int	  defIndex = GetGloveDefIndex(client, team);
+	float fValue   = g_clients[client].getGloveFloat(team);
+	int	  defIndex = g_clients[client].getGloveDefIndex(team);
 	int	  wear	   = RoundFloat(fValue * 100.0);
 
 	eItems_GetGlovesDisplayNameByDefIndex(defIndex, buffer, sizeof(buffer));
@@ -278,24 +271,24 @@ public int GloveFloatMenuHandler(Menu menu, MenuAction action, int client, int s
 
 				int	  team		 = StringToInt(buffer2[0]);
 
-				float floatValue = GetGloveFloatValue(client, team);
+				float floatValue = g_clients[client].getGloveFloat(team);
 
 				if (StrEqual(buffer2[1], "floatinc"))
 				{
-					SetGloveFloatValue(client, team, floatValue + 0.05);
+					g_clients[client].setGloveFloat(team, floatValue + 0.05);
 
 					if (floatValue < 0.0)
-						SetGloveFloatValue(client, team, 0.0);
+						g_clients[client].setGloveFloat(team, 0.0);
 				}
 				else if (StrEqual(buffer2[1], "floatdec"))
 				{
-					SetGloveFloatValue(client, team, floatValue - 0.05);
+					g_clients[client].setGloveFloat(team, floatValue - 0.05);
 
 					if (floatValue > 1.0)
-						SetGloveFloatValue(client, team, 1.0);
+						g_clients[client].setGloveFloat(team, 1.0);
 				}
+
 				RefreshGloves(client);
-				PrintGloves(client);
 
 				CreateGloveFloatMenu(client, team).Display(client, 60);
 			}

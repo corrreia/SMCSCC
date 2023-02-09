@@ -189,7 +189,7 @@ public Menu CreateWeaponCustomMenu(int client, int team, int weaponNum)
 	menu.AddItem(buffer, "Choose Skin");
 
 	//------------ (this part only is available if the weapon has a skin	)
-	bool weaponHasSkin = GetWeaponSkinDefIndex(client, team, weaponNum) != -1;
+	bool weaponHasSkin = g_clients[client].getWeaponSkinDefIndex(team, weaponNum) != -1;
 
 	Format(buffer, sizeof(buffer), "%d_%d_nametag", team, weaponNum);
 	menu.AddItem(buffer, "Change Nametag", weaponHasSkin ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -198,7 +198,7 @@ public Menu CreateWeaponCustomMenu(int client, int team, int weaponNum)
 	menu.AddItem(buffer, "Change Float", weaponHasSkin ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	Format(buffer, sizeof(buffer), "%d_%d_stattrak", team, weaponNum);
-	if (GetWeaponStatTrak(client, team, weaponNum))
+	if (g_clients[client].getWeaponStatTrak(team, weaponNum))
 
 		menu.AddItem(buffer, "StatTrak [On]", weaponHasSkin ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	else
@@ -238,7 +238,7 @@ public int SkinCustomMenuHandler(Menu menu, MenuAction action, int client, int s
 			}
 			else if (StrEqual(buffer2[2], "stattrak"))
 			{
-				SwitchWeaponStatTrak(client, team, weaponNum);
+				g_clients[client].switchStatTrak(team, weaponNum);
 
 				RefreshSkin(client, weaponNum);
 				CreateWeaponCustomMenu(client, team, weaponNum).Display(client, 60);
@@ -246,22 +246,12 @@ public int SkinCustomMenuHandler(Menu menu, MenuAction action, int client, int s
 			else if (StrEqual(buffer2[2], "nametag"))
 			{
 				PrintToChat(client, "Write your desired name tag into chat. To abort, type !abort, to delete type !delete.");
-				eClient clientStruct;
-				g_arClients.GetArray(client, clientStruct, sizeof(clientStruct));
-				clientStruct.waitingType = WAITING_TAG;
-				clientStruct.TN[0]		 = team;
-				clientStruct.TN[1]		 = weaponNum;
-				g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
+				g_clients[client].setWaitingType(WAITING_TAG, team, weaponNum);
 			}
 			else if (StrEqual(buffer2[2], "seed"))
 			{
 				PrintToChat(client, "Write your desired seed into chat. To abort, type !abort.");
-				eClient clientStruct;
-				g_arClients.GetArray(client, clientStruct, sizeof(clientStruct));
-				clientStruct.waitingType = WAITING_W_SEED;
-				clientStruct.TN[0]		 = team;
-				clientStruct.TN[1]		 = weaponNum;
-				g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
+				g_clients[client].setWaitingType(WAITING_WEAPON_SEED, team, weaponNum);
 			}
 		}
 		case MenuAction_Cancel:
@@ -320,7 +310,7 @@ public int SkinMenuHandler(Menu menu, MenuAction action, int client, int selecti
 			int weaponNum	 = StringToInt(buffer2[1]);
 			int skinDefIndex = StringToInt(buffer2[2]);
 
-			SetWeaponSkinDefIndex(client, team, weaponNum, skinDefIndex);
+			g_clients[client].setWeaponSkinDefIndex(team, weaponNum, skinDefIndex);
 			RefreshSkin(client, weaponNum);
 
 			CreateSkinMenu(client, team, weaponNum).Display(client, 60);
@@ -343,7 +333,7 @@ public Menu CreateFloatMenu(int client, int team, int weaponNum)
 	char  buffer[60];
 	Menu  menu	 = new Menu(FloatMenuHandler);
 
-	float fValue = GetWeaponFloatValue(client, team, weaponNum);	// 0.0 float = 100% wear, 1.0 float = 0% wear
+	float fValue = g_clients[client].getWeaponFloat(team, weaponNum);
 	int	  wear	 = RoundFloat(fValue * 100.0);
 
 	eItems_GetWeaponDisplayNameByWeaponNum(weaponNum, buffer, sizeof(buffer));
@@ -377,14 +367,14 @@ public int FloatMenuHandler(Menu menu, MenuAction action, int client, int select
 				int	  weaponNum	 = StringToInt(buffer2[1]);
 				int	  team		 = StringToInt(buffer2[0]);
 
-				float floatValue = GetWeaponFloatValue(client, team, weaponNum);
+				float floatValue = g_clients[client].getWeaponFloat(team, weaponNum);
 
 				if (StrEqual(buffer2[2], "floatinc"))
 				{
-					SetWeaponFloatValue(client, team, weaponNum, floatValue + 0.05);
+					g_clients[client].setWeaponFloat(team, weaponNum, floatValue + 0.05);
 
 					if (floatValue < 0.0)
-						SetWeaponFloatValue(client, team, weaponNum, 0.0);
+						g_clients[client].setWeaponFloat(team, weaponNum, 0.0);
 
 					RefreshSkin(client, weaponNum);
 
@@ -392,10 +382,10 @@ public int FloatMenuHandler(Menu menu, MenuAction action, int client, int select
 				}
 				else if (StrEqual(buffer2[2], "floatdec"))
 				{
-					SetWeaponFloatValue(client, team, weaponNum, floatValue - 0.05);
+					g_clients[client].setWeaponFloat(team, weaponNum, floatValue - 0.05);
 
 					if (floatValue > 1.0)
-						SetWeaponFloatValue(client, team, weaponNum, 1.0);
+						g_clients[client].setWeaponFloat(team, weaponNum, 1.0);
 
 					RefreshSkin(client, weaponNum);
 

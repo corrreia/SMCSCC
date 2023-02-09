@@ -10,11 +10,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#include "smcscc/functions.sp"
 #include "smcscc/globals.sp"
+#include "smcscc/functions.sp"
+#include "smcscc/utils.sp"
 #include "smcscc/hooks.sp"
 #include "smcscc/menus/main.sp"
-#include "smcscc/utils.sp"
 
 public Plugin myinfo =
 {
@@ -47,12 +47,12 @@ public void OnPluginStart()
 	PTaH(PTaH_GiveNamedItemPost, Hook, GiveNamedItemPost);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Pre);
 
-	// LoadTranslations("weapons.phrases");
+	//LoadTranslations("weapons.phrases");
 
-	// ConVar g_Cvar_DBConnection = CreateConVar("sm_smcscc_mongodb_string", "connection-string-here", "Database connection string For MongoDB");
-	// ConVar g_Cvar_main = CreateConVar("sm_smcscc_main_menu", "sm_smcscc", "Main command for the plugin");
+	//ConVar g_Cvar_DBConnection = CreateConVar("sm_smcscc_mongodb_string", "connection-string-here", "Database connection string For MongoDB");
+	//ConVar g_Cvar_main = CreateConVar("sm_smcscc_main_menu", "sm_smcscc", "Main command for the plugin");
 
-	AutoExecConfig(true, "smcscc");
+	//AutoExecConfig(true, "smcscc");
 
 	//			Chat commands
 	AddCommandListener(ChatListener, "say");

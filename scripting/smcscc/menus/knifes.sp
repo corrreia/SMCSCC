@@ -82,7 +82,7 @@ public int KnifeSetMenuHandler(Menu menu, MenuAction action, int client, int sel
 				int team	 = StringToInt(buffer2[0]);
 				int defIndex = StringToInt(buffer2[1]);
 
-				SetClientKnife(client, team, defIndex);
+				g_clients[client].setKnifeDefIndex(team, defIndex);
 
 				RefreshKnife(client);	 //, eItems_GetWeaponNumByDefIndex(defIndex));
 

@@ -6,13 +6,13 @@ void SetWeaponProps(int client, int entity)	   // perfect
 	int	 weaponNum		= eItems_GetWeaponNumByDefIndex(weaponDefIndex);
 	char weaponClass[32];
 	eItems_GetWeaponClassNameByDefIndex(weaponDefIndex, weaponClass, sizeof(weaponClass));
-	int	  skinDefIndex = GetWeaponSkinDefIndex(client, team, weaponNum);
-	float skinFloat	   = GetWeaponFloatValue(client, team, weaponNum);
-	int	  skinSeed	   = GetWeaponSeed(client, team, weaponNum);
-	char  weaponTag[128];
-	GetWeaponNameTag(client, team, weaponNum, weaponTag, sizeof(weaponTag));
-	bool statTrak	   = GetWeaponStatTrak(client, team, weaponNum);
-	int	 statTrakCount = GetWeaponStatTrakCount(client, team, weaponNum);
+	int	  skinDefIndex = g_clients[client].getWeaponSkinDefIndex(team, weaponNum);
+	float skinFloat	   = g_clients[client].getWeaponFloat(team, weaponNum);
+	int	  skinSeed	   = g_clients[client].getWeaponSeed(team, weaponNum);
+	char  weaponTag[32];
+	g_clients[client].getWeaponNameTag(team, weaponNum, weaponTag, sizeof(weaponTag));
+	bool statTrak	   = g_clients[client].getWeaponStatTrak(team, weaponNum);
+	int	 statTrakCount = g_clients[client].getWeaponStatTrakCount(team, weaponNum);
 
 	if (weaponNum > -1 && skinDefIndex != -1)
 	{
@@ -29,8 +29,10 @@ void SetWeaponProps(int client, int entity)	   // perfect
 		}
 		else
 		{
-			SetWeaponSeed(client, team, weaponNum, GetRandomInt(0, 8192));
-			SetEntProp(entity, Prop_Send, "m_nFallbackSeed", GetWeaponSeed(client, team, weaponNum));
+			int randomSeed = GetRandomInt(0, 8192);
+
+			g_clients[client].setWeaponSeed(team, weaponNum, randomSeed);
+			SetEntProp(entity, Prop_Send, "m_nFallbackSeed", randomSeed);
 		}
 
 		SetEntProp(entity, Prop_Send, "m_nFallbackStatTrak", statTrak ? statTrakCount : -1);
@@ -47,7 +49,7 @@ void SetWeaponProps(int client, int entity)	   // perfect
 	}
 }
 
-void RefreshSkin(int client, int weaponNum)	   //! this is only for WEAPON SKINS, not for knives
+void RefreshSkin(int client, int weaponNum)
 {
 	int size = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");	  // get the number of weapons the player has
 
@@ -115,9 +117,12 @@ void RefreshKnife(int client)
 public void RefreshGloves(int client)
 {
 	int team = GetClientTeam(client);
-	int seed = GetGloveSeed(client, team);
+	int gloveDefIndex = g_clients[client].getGloveDefIndex(team);
+	int seed = g_clients[client].getGloveSeed(team);
+	float wear = g_clients[client].getGloveFloat(team);
+	int skin = g_clients[client].getGloveSkinDefIndex(team);
 
-	if (GetGloveDefIndex(client, team) != -1)
+	if (gloveDefIndex != -1)
 	{
 		int ent = GetEntPropEnt(client, Prop_Send, "m_hMyWearables");
 		if (ent != -1)
@@ -130,12 +135,15 @@ public void RefreshGloves(int client)
 		ent = CreateEntityByName("wearable_item");
 		if (ent != -1)
 		{
+			
+
+			PrintToChatAll("seed: %d, wear: %f, skin: %d, defindex: %d", seed, wear, skin, gloveDefIndex);
+
 			SetEntProp(ent, Prop_Send, "m_iItemIDLow", -1);
+			SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", gloveDefIndex);
+			SetEntProp(ent, Prop_Send, "m_nFallbackPaintKit", skin);
 
-			SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", GetGloveDefIndex(client, team));
-			SetEntProp(ent, Prop_Send, "m_nFallbackPaintKit", GetGloveSkinDefIndex(client, team));
-
-			SetEntPropFloat(ent, Prop_Send, "m_flFallbackWear", GetGloveFloatValue(client, team));
+			SetEntPropFloat(ent, Prop_Send, "m_flFallbackWear", wear);
 			if (seed != -1)
 			{
 				SetEntProp(ent, Prop_Send, "m_nFallbackSeed", seed);

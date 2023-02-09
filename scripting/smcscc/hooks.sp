@@ -52,7 +52,8 @@ Action GiveNamedItemPre(int client, char classname[64], CEconItemView &item, boo
 	if (IsValidClient(client))
 	{
 		int team	 = GetClientTeam(client);
-		int defIndex = GetClientKnife(client, team);
+		int defIndex = g_clients[client].getKnifeDefIndex(team);
+
 		if (defIndex != 0 && eItems_IsDefIndexKnife(eItems_GetWeaponDefIndexByClassName(classname)))
 		{
 			ignoredCEconItemView = true;
@@ -93,14 +94,15 @@ public Action ChatListener(int client, const char[] command, int args)
 	GetCmdArgString(msg, sizeof(msg));
 	StripQuotes(msg);
 
-	eClient clientStruct;
-	g_arClients.GetArray(client, clientStruct, sizeof(clientStruct));
+	eWaitingType type = g_clients[client].getWaitingType();
+	int team = g_clients[client].getWaitingTeam();
+	int weaponNum = g_clients[client].getWaitingWeaponNum();
 
-	if (clientStruct.waitingType == WAITING_TAG && IsValidClient(client) && !IsChatTrigger())
+	if (type == WAITING_TAG && IsValidClient(client) && !IsChatTrigger())
 	{
 		CleanNameTag(msg, sizeof(msg));
 
-		clientStruct.waitingType = NONE;
+		g_clients[client].setWaitingType(NONE);
 
 		if (StrEqual(msg, "!abort"))
 		{
@@ -110,22 +112,21 @@ public Action ChatListener(int client, const char[] command, int args)
 
 		if (StrEqual(msg, "!delete"))
 		{
-			SetWeaponNameTag(client, clientStruct.TN[0], clientStruct.TN[1], "");
+			g_clients[client].setWeaponNameTag(team, weaponNum, "", 1);
+
 			PrintToChat(client, "Name tag deleted.");
-			RefreshSkin(client, clientStruct.TN[1]);
-			g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
+			RefreshSkin(client, weaponNum);
 			return Plugin_Handled;
 		}
 
-		SetWeaponNameTag(client, clientStruct.TN[0], clientStruct.TN[1], msg);
+		g_clients[client].setWeaponNameTag(team, weaponNum, msg, sizeof(msg));
 
-		g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
-		RefreshSkin(client, clientStruct.TN[1]);
+		RefreshSkin(client, weaponNum);
 		PrintToChat(client, "Name tag successfully applied");
 	}
-	else if (clientStruct.waitingType == WAITING_W_SEED && IsValidClient(client) && !IsChatTrigger())
+	else if (type == WAITING_WEAPON_SEED && IsValidClient(client) && !IsChatTrigger())
 	{
-		clientStruct.waitingType = NONE;
+		g_clients[client].setWaitingType(NONE);
 
 		PrintToChatAll("%s", msg);
 		if (StrEqual(msg, "!abort"))
@@ -142,14 +143,13 @@ public Action ChatListener(int client, const char[] command, int args)
 			return Plugin_Handled;
 		}
 
-		SetWeaponSeed(client, clientStruct.TN[0], clientStruct.TN[1], seed);
+		g_clients[client].setWeaponSeed(team, weaponNum, seed);
 
-		g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
-		RefreshSkin(client, clientStruct.TN[1]);
+		RefreshSkin(client, weaponNum);
 		PrintToChat(client, "Weapon seed successfully applied");
 	}
-	else if (clientStruct.waitingType == WAITING_G_SEED && IsValidClient(client) && !IsChatTrigger()) {
-		clientStruct.waitingType = NONE;
+	else if (type == WAITING_GLOVE_SEED && IsValidClient(client) && !IsChatTrigger()) {
+		g_clients[client].setWaitingType(NONE);
 
 		PrintToChatAll("%s", msg);
 		if (StrEqual(msg, "!abort"))
@@ -166,9 +166,7 @@ public Action ChatListener(int client, const char[] command, int args)
 			return Plugin_Handled;
 		}
 
-		SetGloveSeed(client, clientStruct.TN[0], seed);
-
-		g_arClients.SetArray(client, clientStruct, sizeof(clientStruct));
+		g_clients[client].setGloveSeed(team, seed);
 
 		RefreshGloves(client);
 
@@ -195,8 +193,10 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 	int weaponDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	int team		   = GetClientTeam(attacker);
 	int weaponNum	   = eItems_GetWeaponNumByDefIndex(weaponDefIndex);
+	int attackerSkinDefIndex = g_clients[attacker].getWeaponSkinDefIndex(team, weaponNum);
+	bool statTrak = g_clients[attacker].getWeaponStatTrak(team, weaponNum);
 
-	if ((weaponDefIndex == -1) || (GetWeaponSkinDefIndex(attacker, team, weaponNum) == -1) || !GetWeaponStatTrak(attacker, team, weaponNum))	// if weapon is not a knife and has a skin and has stattrak
+	if ((weaponDefIndex == -1) || attackerSkinDefIndex == -1 || !statTrak)	// if weapon is not a knife and has a skin and has stattrak
 		return Plugin_Continue;
 
 	if (GetEntProp(weapon, Prop_Send, "m_nFallbackStatTrak") == -1)
@@ -206,7 +206,7 @@ public Action OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float
 	if ((previousOwner = GetEntPropEnt(weapon, Prop_Send, "m_hPrevOwner")) != INVALID_ENT_REFERENCE && previousOwner != attacker)
 		return Plugin_Continue;
 
-	PlusOneKill(attacker, team, weaponNum);
+	g_clients[attacker].plusOneStatTrak(team, weaponNum);
 
 	// UPDATE DATABASE
 
