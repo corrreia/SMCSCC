@@ -20,13 +20,13 @@ jobs:
         uses: rumblefrog/setup-sp@master
         with:
           version: "1.10.x"
-          version-file: ./scripting/SMCSCC.sp
+          version-file: ./scripting/smcscc.sp
 
       - name: Compile plugins
         run: |
           mkdir plugins
           cd scripting
-          spcomp -E -w234 -O2 -v2 -i"include" -o"../plugins/SMCSCC.smx" SMCSCC.sp
+          spcomp -E -w234 -O2 -v2 -i"include" -o"../plugins/smcscc.smx" smcscc.sp
           echo "===OUT FILES==="
           cd ../plugins
           ls
@@ -44,7 +44,7 @@ jobs:
       - name: Zip output
         run: |
           cd plugins
-          zip -qq -r SMCSCC-${{ steps.setup_sp.outputs.plugin-version }}.zip SMCSCC.smx
+          zip -qq -r smcscc-${{ steps.setup_sp.outputs.plugin-version }}.zip smcscc.smx
         working-directory: ${{ env.SCRIPTS_PATH }}
 
       - name: Create Release
@@ -54,7 +54,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ steps.setup_sp.outputs.plugin-version }}
-          artifacts: "./plugins/SMCSCC-${{ steps.setup_sp.outputs.plugin-version }}.zip"
+          artifacts: "./plugins/smcscc-${{ steps.setup_sp.outputs.plugin-version }}.zip"
           body: ${{ steps.changelog.outputs.changes }}
           draft: false
           allowUpdates: true
