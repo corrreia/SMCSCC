@@ -22,7 +22,7 @@ public Plugin myinfo =
 	author      = "Tomás Correia",
 	description = "All in one CS:GO items management",
 	version     = "0.0.1",
-	url         = "https://github.com/corrreia"
+	url         = "https://github.com/corrreia/SMCSCC"
 };
 
 public void OnPluginStart()
@@ -37,7 +37,7 @@ public void OnPluginStart()
 	{
 		char sBuf[16];
 		PTaH_Version(sBuf, sizeof(sBuf));
-		SetFailState("PTaH extension needs to be updated. (Installed Version: %s - Required Version: 1.1.0+) [ Download from: https://ptah.zizt.ru ]", sBuf);
+		SetFailState("PTaH extension needs to be updated. (Installed Version: %s - Required Version: 1.1.3+) [ Download from: https://ptah.zizt.ru ]", sBuf);
 		return;
 	}
 

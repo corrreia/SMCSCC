@@ -1,6 +1,7 @@
 #include "skins.sp"
 #include "knifes.sp"
 #include "gloves.sp"
+#include "stickers.sp"
 
 Menu CreateMainMenu(int client)
 {
@@ -53,7 +54,7 @@ public int MainMenuHandler(Menu menu, MenuAction action, int client, int selecti
 					}
 					case 3:
 					{
-						PrintToChat(client, "Stickers");
+						CreateStickersMenu(client).Display(client, 60);
 					}
 					case 4:
 					{
