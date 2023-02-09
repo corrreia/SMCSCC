@@ -24,7 +24,6 @@ jobs:
 
       - name: Compile plugins
         run: |
-          mkdir plugins
           cd scripting
           spcomp -E -w234 -O2 -v2 -i"include" -o"../plugins/smcscc.smx" smcscc.sp
           echo "===OUT FILES==="
