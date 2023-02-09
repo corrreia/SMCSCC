@@ -1,7 +1,7 @@
 <div align="center">
   <h1><code>SMCSCC</code></h1>
   <p>
-    <strong>Short Description</strong>
+    <strong>Change the Skins you play with in CS:GO</strong>
   </p>
   <p style="margin-bottom: 0.5ex;">
     <img
