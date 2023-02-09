@@ -1,9 +1,6 @@
 ## Release Notes
 
-## [1.0.0]
+## [0.0.1]
 
 ### Added
-
-### Fixed
-
-### Removed
+Ability to change the skins, knifes and gloves.
