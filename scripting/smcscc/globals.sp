@@ -22,7 +22,7 @@ enum struct eGlove
 }
 
 enum struct eSticker{
-	int	  	stickerDefIndex;
+	int	  	defIndex;
 	int 	wear;
 	int 	rotation;
 }
@@ -77,7 +77,7 @@ enum struct eClient
 			weapon.arStickers = new ArrayList(sizeof(eSticker), 5);
 			for (int i = 0; i < 5; i++){
 				eSticker sticker;
-				sticker.stickerDefIndex = -1;
+				sticker.defIndex = -1;
 				sticker.wear = 0;
 				sticker.rotation = 0;
 
@@ -802,8 +802,35 @@ enum struct eClient
 
 	// GETTERS AND SETTER FOR STICKERS
 
-	// int getStickerDefIndex(int team, int weaponNum, int pos){
-	// }
+	int getStickerDefIndex(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < 0 || pos >= 5)
+			return -1;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.defIndex;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.defIndex;
+		}
+
+		return -1;
+	}
 }
 
 public void InitGValriables()
