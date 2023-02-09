@@ -50,8 +50,8 @@ enum struct eClient
 		this.steamID64		 = "\0";
 		this.arWeaponsT		 = new ArrayList(sizeof(eWeapon), eItems_GetWeaponCount());
 		this.arWeaponsCT	 = new ArrayList(sizeof(eWeapon), eItems_GetWeaponCount());
-		this.knifeTDefIndex	 = -1;
-		this.knifeCTDefIndex = -1;
+		this.knifeTDefIndex	 = 0;
+		this.knifeCTDefIndex = 0;
 		this.waitingType	 = NONE;
 		this.TN				 = { 0, 0 };
 
@@ -160,12 +160,15 @@ enum struct eClient
 	// }
 
 	bool setKnifeDefIndex(int team, int knifeDefIndex){
-		if (team != 2 && team != 3)
+		//if team == 0 then do for both teams
+
+		if (team != 0 && team != 2 && team != 3)
 			return false;
 
-		if (team == 2)
+		if (team == 0 || team == 2)
 			this.knifeTDefIndex = knifeDefIndex;
-		else
+		
+		if (team == 0 || team == 3)
 			this.knifeCTDefIndex = knifeDefIndex;
 
 		return true;
