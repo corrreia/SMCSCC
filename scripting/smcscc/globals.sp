@@ -23,7 +23,7 @@ enum struct eGlove
 
 enum struct eSticker{
 	int	  	defIndex;
-	int 	wear;
+	float  	wear;
 	int 	rotation;
 }
 
@@ -78,7 +78,7 @@ enum struct eClient
 			for (int i = 0; i < 5; i++){
 				eSticker sticker;
 				sticker.defIndex = -1;
-				sticker.wear = 0;
+				sticker.wear = 0.0;
 				sticker.rotation = 0;
 
 				weapon.arStickers.SetArray(i, sticker);
@@ -831,11 +831,202 @@ enum struct eClient
 
 		return -1;
 	}
+
+	float getStickerWear(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1.0;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1.0;
+
+		if (pos < 0 || pos >= 5)
+			return -1.0;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.wear;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.wear;
+		}
+
+		return -1.0;
+	}
+
+	int getStickerRotation(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < 0 || pos >= 5)
+			return -1;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.rotation;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.rotation;
+		}
+
+		return -1;
+	}
+
+	int setStickerDefIndex(int team, int weaponNum, int pos, int defIndex){
+		//if pos == -1 it will set all stickers
+
+		if (team != 2 && team != 3)
+			return -1;
+		
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < -1 || pos >= 5)
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				this.setStickerDefIndex(team, weaponNum, i, defIndex);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.defIndex = defIndex;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.defIndex = defIndex;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+		}
+
+		return 0;
+	}
+
+	int setStickerWear(int team, int weaponNum, int pos, float wear){
+		//if pos == -1 it will set all stickers
+
+		if (team != 2 && team != 3)
+			return -1;
+		
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < -1 || pos >= 5)
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				this.setStickerWear(team, weaponNum, i, wear);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.wear = wear;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.wear = wear;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+		}
+
+		return 0;
+	}
+
+	int setStickerRotation(int team, int weaponNum, int pos, int rotation){
+		//if pos == -1 it will set all stickers
+
+		if (team != 2 && team != 3)
+			return -1;
+		
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < -1 || pos >= 5)
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				this.setStickerRotation(team, weaponNum, i, rotation);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.rotation = rotation;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.rotation = rotation;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+		}
+
+		return 0;
+	}
 }
 
 public void InitGValriables()
 {
-	//g_arClients			 = new ArrayList(sizeof(eClient), MAXPLAYERS + 1);
 	g_arKnifesDefIndexes = new ArrayList();
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
