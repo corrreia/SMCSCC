@@ -54,7 +54,7 @@ public int MainMenuHandler(Menu menu, MenuAction action, int client, int selecti
 					}
 					case 3:
 					{
-						CreateStickersMenu(client).Display(client, 60);
+						CreateStickerMainMenu(client).Display(client, 60);
 					}
 					case 4:
 					{

@@ -1,6 +1,7 @@
 
 //ArrayList g_arClients		   = null;
 ArrayList g_arKnifesDefIndexes = null;
+ArrayList g_arStickersDefIndexes = null;
 
 eClient g_clients[MAXPLAYERS + 1];
 
@@ -893,20 +894,21 @@ enum struct eClient
 	}
 
 	int setStickerDefIndex(int team, int weaponNum, int pos, int defIndex){
-		//if pos == -1 it will set all stickers
+		//if pos == 0 it will set all stickers
+		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
 			return -1;
-		
+
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < -1 || pos >= 5)
+		if (pos < 0 || pos >= 5)
 			return -1;
 
-		if (pos == -1)
+		if (pos == 0)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 1; i < 5; i++)
 			{
 				this.setStickerDefIndex(team, weaponNum, i, defIndex);
 			}
@@ -914,7 +916,7 @@ enum struct eClient
 		}
 
 		eWeapon weapon;
-		if (team == 2)
+		if (team == 0 || team == 2)
 		{
 			this.arWeaponsT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -922,8 +924,9 @@ enum struct eClient
 			sticker.defIndex = defIndex;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsT.SetArray(weaponNum, weapon);
+			return 0;
 		}
-		else if (team == 3)
+		else if (team == 0 || team == 3)
 		{
 			this.arWeaponsCT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -931,26 +934,28 @@ enum struct eClient
 			sticker.defIndex = defIndex;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsCT.SetArray(weaponNum, weapon);
+			return 0;
 		}
-
-		return 0;
+		
+		return -1;
 	}
 
 	int setStickerWear(int team, int weaponNum, int pos, float wear){
-		//if pos == -1 it will set all stickers
+		//if pos == 0 it will set all stickers
+		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
 			return -1;
-		
+
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < -1 || pos >= 5)
+		if (pos < 0 || pos >= 5)
 			return -1;
 
-		if (pos == -1)
+		if (pos == 0)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 1; i < 5; i++)
 			{
 				this.setStickerWear(team, weaponNum, i, wear);
 			}
@@ -958,7 +963,7 @@ enum struct eClient
 		}
 
 		eWeapon weapon;
-		if (team == 2)
+		if (team == 0 || team == 2)
 		{
 			this.arWeaponsT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -966,8 +971,9 @@ enum struct eClient
 			sticker.wear = wear;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsT.SetArray(weaponNum, weapon);
+			return 0;
 		}
-		else if (team == 3)
+		else if (team == 0 || team == 3)
 		{
 			this.arWeaponsCT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -975,26 +981,28 @@ enum struct eClient
 			sticker.wear = wear;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsCT.SetArray(weaponNum, weapon);
+			return 0;
 		}
 
-		return 0;
+		return -1;
 	}
 
 	int setStickerRotation(int team, int weaponNum, int pos, int rotation){
-		//if pos == -1 it will set all stickers
+		//if pos == 0 it will set all stickers
+		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
 			return -1;
-		
+
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < -1 || pos >= 5)
+		if (pos < 0 || pos >= 5)
 			return -1;
 
-		if (pos == -1)
+		if (pos == 0)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 1; i < 5; i++)
 			{
 				this.setStickerRotation(team, weaponNum, i, rotation);
 			}
@@ -1002,7 +1010,7 @@ enum struct eClient
 		}
 
 		eWeapon weapon;
-		if (team == 2)
+		if (team == 0 || team == 2)
 		{
 			this.arWeaponsT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -1010,8 +1018,9 @@ enum struct eClient
 			sticker.rotation = rotation;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsT.SetArray(weaponNum, weapon);
+			return 0;
 		}
-		else if (team == 3)
+		else if (team == 0 || team == 3)
 		{
 			this.arWeaponsCT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -1019,15 +1028,17 @@ enum struct eClient
 			sticker.rotation = rotation;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsCT.SetArray(weaponNum, weapon);
+			return 0;
 		}
 
-		return 0;
+		return -1;
 	}
 }
 
 public void InitGValriables()
 {
 	g_arKnifesDefIndexes = new ArrayList();
+	g_arStickersDefIndexes = new ArrayList();
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -1049,4 +1060,28 @@ public void LoadItems()
 		}
 	}
 	PrintToServer("[SMCSCC] Knifes synced.");
+
+	for (int i = 0; i < eItems_GetStickersSetsCount(); i++)
+	{
+		ArrayList setArr = new ArrayList();
+		setArr.Push(setArr);	
+	}
+
+	for (int i = 0; i < eItems_GetStickersCount(); i++)
+	{
+		// use eItems_IsStickerInSet(int iStickerSetNum, int iStickerNum);
+		// to fill g_arStickersDefIndexes
+
+		for (int j = 0; j < eItems_GetStickersSetsCount(); j++)
+		{
+			if (eItems_IsStickerInSet(j, i))
+			{
+				ArrayList arr = g_arStickersDefIndexes.Get(j);
+				arr.Push(eItems_GetStickerDefIndexByStickerNum(i));
+				g_arStickersDefIndexes.Set(j, arr);
+			}
+		}
+	}
+
+	PrintToServer("[SMCSCC] Stickers synced.");
 }
