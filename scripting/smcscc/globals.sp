@@ -1,7 +1,4 @@
 
-//ArrayList g_arClients		   = null;
-ArrayList g_arKnifesDefIndexes = null;
-
 eClient g_clients[MAXPLAYERS + 1];
 
 enum eWaitingType
@@ -1038,7 +1035,7 @@ enum struct eClient
 
 public void InitGValriables()
 {
-	g_arKnifesDefIndexes = new ArrayList();
+	//g_arKnifesDefIndexes = new ArrayList();
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -1047,17 +1044,4 @@ public void InitGValriables()
 	PrintToServer("[SMCSCC] Clients array initialized.");
 
 	PrintToServer("[SMCSCC] Global variables initialized.");
-}
-
-public void LoadItems()
-{
-	for (int j = 0; j < eItems_GetWeaponCount(); j++)
-	{
-		int defIndex = eItems_GetWeaponDefIndexByWeaponNum(j);
-		if (eItems_IsDefIndexKnife(defIndex) && eItems_IsSkinnableDefIndex(defIndex))
-		{
-			g_arKnifesDefIndexes.Push(defIndex);
-		}
-	}
-	PrintToServer("[SMCSCC] Knifes synced.");
 }

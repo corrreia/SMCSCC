@@ -67,7 +67,7 @@ public void OnLibraryAdded(const char[] name)
 {
 	if (StrEqual(name, "eItems"))
 	{
-		LoadItems();
+		
 	}
 }
 
