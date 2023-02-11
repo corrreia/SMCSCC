@@ -1,7 +1,6 @@
 
 //ArrayList g_arClients		   = null;
 ArrayList g_arKnifesDefIndexes = null;
-ArrayList g_arStickersDefIndexes = null;
 
 eClient g_clients[MAXPLAYERS + 1];
 
@@ -208,6 +207,8 @@ enum struct eClient
 		this.waitingType = waitingType;
 		this.TN[0]		 = team;
 		this.TN[1]		 = weaponNum;
+
+		PrintToChatAll("%d - %d", this.waitingType, waitingType)
 
 		return true;
 	}
@@ -1038,7 +1039,6 @@ enum struct eClient
 public void InitGValriables()
 {
 	g_arKnifesDefIndexes = new ArrayList();
-	g_arStickersDefIndexes = new ArrayList();
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -1060,28 +1060,4 @@ public void LoadItems()
 		}
 	}
 	PrintToServer("[SMCSCC] Knifes synced.");
-
-	for (int i = 0; i < eItems_GetStickersSetsCount(); i++)
-	{
-		ArrayList setArr = new ArrayList();
-		setArr.Push(setArr);	
-	}
-
-	for (int i = 0; i < eItems_GetStickersCount(); i++)
-	{
-		// use eItems_IsStickerInSet(int iStickerSetNum, int iStickerNum);
-		// to fill g_arStickersDefIndexes
-
-		for (int j = 0; j < eItems_GetStickersSetsCount(); j++)
-		{
-			if (eItems_IsStickerInSet(j, i))
-			{
-				ArrayList arr = g_arStickersDefIndexes.Get(j);
-				arr.Push(eItems_GetStickerDefIndexByStickerNum(i));
-				g_arStickersDefIndexes.Set(j, arr);
-			}
-		}
-	}
-
-	PrintToServer("[SMCSCC] Stickers synced.");
 }

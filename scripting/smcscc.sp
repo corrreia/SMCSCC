@@ -13,8 +13,8 @@
 #include "smcscc/globals.sp"
 #include "smcscc/functions.sp"
 #include "smcscc/utils.sp"
-#include "smcscc/hooks.sp"
 #include "smcscc/menus/main.sp"
+#include "smcscc/hooks.sp"
 
 public Plugin myinfo =
 {

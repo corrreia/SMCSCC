@@ -51,7 +51,7 @@ Menu CreateStickerMainMenu(int client)
 	}
 
 	//menu.AddItem("x", "", ITEMDRAW_SPACER);
-	Format(buffer, sizeof(buffer), "slot_%d_%d_0", team, weaponDefIndex);
+	Format(buffer, sizeof(buffer), "slot_%d_%d_0", team, weaponDefIndex); 
 	menu.AddItem(buffer, "All Stickers");
 
 	Format(buffer, sizeof(buffer), "wear_%d_%d_0", team, weaponDefIndex);
@@ -73,8 +73,28 @@ public int StickerMainMenuHandler(Menu menu, MenuAction action, int client, int 
 		{
 			if (IsClientInGame(client))
 			{
-				char info[32];
-				menu.GetItem(selection, info, sizeof(info));
+				char buffer[32];
+				char buffer2[4][32];
+				menu.GetItem(selection, buffer, sizeof(buffer));
+				ExplodeString(buffer, "_", buffer2, 4, 32);  // [0] = type, [1] = team, [2] = weapon, [3] = pos
+
+				
+				int team = StringToInt(buffer2[1]);
+				int weaponDefIndex = StringToInt(buffer2[2]);
+				int pos = StringToInt(buffer2[3]);
+
+				if (StrEqual(buffer2[0], "slot"))
+				{
+					CreateStickersMenu(client, team, weaponDefIndex, pos).Display(client, 60);
+				}
+				else if (StrEqual(buffer2[0], "wear"))
+				{
+					//CreateStickerWearMenu(client, weaponDefIndex, team, pos).Display(client, 60);
+				}
+				else if (StrEqual(buffer2[0], "rotation"))
+				{
+					//CreateStickerRotationMenu(client, weaponDefIndex, team, pos).Display(client, 60);
+				}
 			}
 		}
 		case MenuAction_Cancel:
@@ -90,24 +110,27 @@ public int StickerMainMenuHandler(Menu menu, MenuAction action, int client, int 
 	return 1;
 }
 
-Menu CreateStickersMenu(int client)
+Menu CreateStickersMenu(int client, int team, int weaponDefIndex, int pos)
 {
 	Menu menu = new Menu(StickersMenuHandler);
+
+	char buffer[32];
 
 	if (IsPlayerAlive(client))
 	{
 		menu.SetTitle("Sticker Menu", client);
 
+		Format(buffer, sizeof(buffer), "all_%d_%d_%d", team, weaponDefIndex, pos);
 		menu.AddItem("all", "All Stickers");
 
+		Format(buffer, sizeof(buffer), "search_%d_%d_%d", team, weaponDefIndex, pos);
 		menu.AddItem("search", "Search Stickers");
-		
+
 		return menu;
 	}else{
 		PrintToChat(client, "You must be alive to use this command");
-		return;
+		return null;
 	}
-
 }
 
 public int StickersMenuHandler(Menu menu, MenuAction action, int client, int selection)
@@ -118,12 +141,19 @@ public int StickersMenuHandler(Menu menu, MenuAction action, int client, int sel
 		{
 			if (IsClientInGame(client))
 			{
-				char info[32];
-				menu.GetItem(selection, info, sizeof(info));
+				char buffer[32];
+				menu.GetItem(selection, buffer, sizeof(buffer));
 
-				if (StrEqual(info, "all"))
+				char buffer2[4][32];
+				ExplodeString(buffer, "_", buffer2, 4, 32);  // [0] = type, [1] = team, [2] = weapon, [3] = pos
+
+				int team = StringToInt(buffer2[1]);
+				int weaponDefIndex = StringToInt(buffer2[2]);
+				int pos = StringToInt(buffer2[3]);
+
+				if (StrEqual(buffer2[0], "all"))
 				{
-					CreateStickersSubMenu(client).Display(client, 60);
+					CreateStickersSetsMenu(client, team, weaponDefIndex, pos).Display(client, 60);
 				}
 				else //search
 				{
@@ -145,34 +175,34 @@ public int StickersMenuHandler(Menu menu, MenuAction action, int client, int sel
 	return 1;
 }
 
-Menu CreateStickersSubMenu(int client, char[] search = "")
+Menu CreateStickersSetsMenu(int client, int team, int weaponDefIndex, int pos)
 {
-	Menu menu = new Menu(StickersSubMenuHandler);
+	Menu menu = new Menu(StickersSetsMenuHandler);
 
 	if (IsPlayerAlive(client))
 	{
-		//if search is empty, display all stickers
-		if (StrEqual(search, ""))
-		{
-			menu.SetTitle("All Stickers", client);
+		menu.SetTitle("Chose the collection", client);
 
-			
-		}
-		else //display stickers that match the search
-		{
-			menu.SetTitle("Search Results", client);
+		// char buffer[32];
+		// char displayBuffer[32];
 
-			
-		}
+		// for (int set = 1; set < eItems_GetStickersSetsCount(); set++)  //FIXME: WTF
+		// {
+		// 	Format(buffer, sizeof(buffer), "set_%d_%d_%d_%d", team, weaponDefIndex, pos, set);
+		// 	eItems_GetSpraySetDisplayNameBySpraySetNum(set, displayBuffer, sizeof(displayBuffer));
+		// 	menu.AddItem(buffer, displayBuffer);
+		// }
+
+		menu.ExitButton = true;
+
+		return menu;
 		
 	}else{
 		PrintToChat(client, "You must be alive to apply stickers.");
 		return null;
 	}
-
-	return menu;
 }
 
-public int StickersSubMenuHandler(Menu menu, MenuAction action, int client, int selection)
+public int StickersSetsMenuHandler(Menu menu, MenuAction action, int client, int selection)
 {
 }
