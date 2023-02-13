@@ -1,7 +1,4 @@
 
-//ArrayList g_arClients		   = null;
-ArrayList g_arKnifesDefIndexes = null;
-
 eClient g_clients[MAXPLAYERS + 1];
 
 enum eWaitingType
@@ -10,6 +7,7 @@ enum eWaitingType
 	WAITING_TAG	   = 1,
 	WAITING_WEAPON_SEED = 2,
 	WAITING_GLOVE_SEED = 3,
+	WAITING_STICKER_SEARCH = 4,
 }
 
 enum struct eGlove
@@ -18,6 +16,12 @@ enum struct eGlove
 	int	  skinDefIndex;
 	float floatValue;
 	int	  seed;
+}
+
+enum struct eSticker{
+	int	  	defIndex;
+	float  	wear;
+	int 	rotation;
 }
 
 enum struct eWeapon
@@ -29,6 +33,8 @@ enum struct eWeapon
 	int	  seed;
 	bool  statTrak;
 	int	  statTrakCount;
+
+	ArrayList arStickers; //up to 5
 }
 
 enum struct eClient
@@ -64,6 +70,16 @@ enum struct eClient
 			weapon.seed			  = -1;
 			weapon.statTrak		  = false;
 			weapon.statTrakCount  = 0;
+
+			weapon.arStickers = new ArrayList(sizeof(eSticker), 5);
+			for (int i = 0; i < 5; i++){
+				eSticker sticker;
+				sticker.defIndex = -1;
+				sticker.wear = 0.0;
+				sticker.rotation = 0;
+
+				weapon.arStickers.SetArray(i, sticker);
+			}
 
 			this.arWeaponsT.SetArray(j, weapon);
 			this.arWeaponsCT.SetArray(j, weapon);
@@ -188,6 +204,8 @@ enum struct eClient
 		this.waitingType = waitingType;
 		this.TN[0]		 = team;
 		this.TN[1]		 = weaponNum;
+
+		PrintToChatAll("%d - %d", this.waitingType, waitingType)
 
 		return true;
 	}
@@ -779,14 +797,235 @@ enum struct eClient
 		
 		return 0;
 	}
+
+
+	// GETTERS AND SETTER FOR STICKERS
+
+	int getStickerDefIndex(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < 0 || pos >= 5)
+			return -1;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.defIndex;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.defIndex;
+		}
+
+		return -1;
+	}
+
+	float getStickerWear(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1.0;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1.0;
+
+		if (pos < 0 || pos >= 5)
+			return -1.0;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.wear;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.wear;
+		}
+
+		return -1.0;
+	}
+
+	int getStickerRotation(int team, int weaponNum, int pos){
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos < 0 || pos >= 5)
+			return -1;
+
+		eWeapon weapon;
+		if (team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.rotation;
+
+		}
+		else if (team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			return sticker.rotation;
+		}
+
+		return -1;
+	}
+
+	int setStickerDefIndex(int team, int weaponNum, int pos, int defIndex){
+		//if pos == -1 it will set all stickers
+		//if team == 0 it will set all teams
+
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				this.setStickerDefIndex(team, weaponNum, i, defIndex);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 0 || team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.defIndex = defIndex;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+		}
+
+		if (team == 0 || team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.defIndex = defIndex;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+		}
+
+		return 0;
+	}
+
+	int setStickerWear(int team, int weaponNum, int pos, float wear){
+		//if pos == -1 it will set all stickers
+		//if team == 0 it will set all teams
+
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				this.setStickerWear(team, weaponNum, i, wear);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 0 || team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.wear = wear;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+			return 0;
+		}
+		else if (team == 0 || team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.wear = wear;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+			return 0;
+		}
+
+		return -1;
+	}
+
+	int setStickerRotation(int team, int weaponNum, int pos, int rotation){
+		//if pos == -1 it will set all stickers
+		//if team == 0 it will set all teams
+
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+			return -1;
+
+		if (pos == -1)
+		{
+			for (int i = 1; i < 5; i++)
+			{
+				this.setStickerRotation(team, weaponNum, i, rotation);
+			}
+			return 0;
+		}
+
+		eWeapon weapon;
+		if (team == 0 || team == 2)
+		{
+			this.arWeaponsT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.rotation = rotation;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsT.SetArray(weaponNum, weapon);
+			return 0;
+		}
+		else if (team == 0 || team == 3)
+		{
+			this.arWeaponsCT.GetArray(weaponNum, weapon);
+			eSticker sticker;
+			weapon.arStickers.GetArray(pos, sticker);
+			sticker.rotation = rotation;
+			weapon.arStickers.SetArray(pos, sticker);
+			this.arWeaponsCT.SetArray(weaponNum, weapon);
+			return 0;
+		}
+
+		return -1;
+	}
 }
 
 public void InitGValriables()
 {
-	//g_arClients			 = new ArrayList(sizeof(eClient), MAXPLAYERS + 1);
-	g_arKnifesDefIndexes = new ArrayList();
-
-	
+	//g_arKnifesDefIndexes = new ArrayList();
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
@@ -795,17 +1034,4 @@ public void InitGValriables()
 	PrintToServer("[SMCSCC] Clients array initialized.");
 
 	PrintToServer("[SMCSCC] Global variables initialized.");
-}
-
-public void LoadItems()
-{
-	for (int j = 0; j < eItems_GetWeaponCount(); j++)
-	{
-		int defIndex = eItems_GetWeaponDefIndexByWeaponNum(j);
-		if (eItems_IsDefIndexKnife(defIndex) && eItems_IsSkinnableDefIndex(defIndex))
-		{
-			g_arKnifesDefIndexes.Push(defIndex);
-		}
-	}
-	PrintToServer("[SMCSCC] Knifes synced.");
 }

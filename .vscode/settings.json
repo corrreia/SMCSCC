@@ -1,3 +1,7 @@
 {
-	"sourcepawn.MainPath": "c:\\Users\\tomas\\Desktop\\SMCSCC\\scripting\\smcscc.sp"
+	"sourcepawn.MainPath": "c:\\Users\\tomas\\Desktop\\SMCSCC\\scripting\\smcscc.sp",
+	"SourcePawnLanguageServer.mainPath": "/home/correia/SMCSCC/scripting/smcscc.sp",
+	"SourcePawnLanguageServer.includesDirectories": [
+		"/home/correia/SMCSCC/scripting/include"
+	]
 }

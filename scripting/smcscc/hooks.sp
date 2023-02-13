@@ -79,6 +79,7 @@ public void GiveNamedItemPost(int client, const char[] classname, const CEconIte
 				EquipPlayerWeapon(client, entity);
 			}
 			SetWeaponProps(client, entity);
+			SetWeaponSticker(client, entity);
 		}
 	}
 }

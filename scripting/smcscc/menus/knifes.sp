@@ -53,12 +53,14 @@ public Menu CreateKnifeSetMenu(int client, int team)
 	Format(buffer, sizeof(buffer), "%d_%d", team, -1);
 	menu.AddItem(buffer, "Default");
 
-	for (int i = 0; i < g_arKnifesDefIndexes.Length; i++)
+	for (int i = 0; i < eItems_GetWeaponCount(); i++)
 	{
-		int defindex = g_arKnifesDefIndexes.Get(i);
-		Format(buffer, sizeof(buffer), "%d_%d", team, defindex);
-		eItems_GetWeaponDisplayNameByDefIndex(defindex, knifeName, sizeof(knifeName));
-		menu.AddItem(buffer, knifeName);
+		int defIndex = eItems_GetWeaponDefIndexByWeaponNum(i);
+		if(eItems_IsDefIndexKnife(defIndex) && eItems_IsSkinnableDefIndex(defIndex)){
+			Format(buffer, sizeof(buffer), "%d_%d", team, defIndex);
+			eItems_GetWeaponDisplayNameByDefIndex(defIndex, knifeName, sizeof(knifeName));
+			menu.AddItem(buffer, knifeName);
+		}
 	}
 
 	menu.ExitBackButton = true;
