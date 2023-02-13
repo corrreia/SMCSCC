@@ -173,8 +173,6 @@ public void RefreshGloves(int client)
 		ent = CreateEntityByName("wearable_item");
 		if (ent != -1)
 		{
-			PrintToChatAll("seed: %d, wear: %f, skin: %d, defindex: %d", seed, wear, skin, gloveDefIndex);
-
 			SetEntProp(ent, Prop_Send, "m_iItemIDLow", -1);
 			SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", gloveDefIndex);
 			SetEntProp(ent, Prop_Send, "m_nFallbackPaintKit", skin);

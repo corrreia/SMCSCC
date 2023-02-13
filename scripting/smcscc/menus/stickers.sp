@@ -34,9 +34,9 @@ Menu CreateStickerMainMenu(int client)
 	for (int i = 1; i < slots + 1; i++)
 	{
 		Format(buffer, sizeof(buffer), "slot_%d_%d_%d", team, weaponDefIndex, i);
-		int stickerDefIndex = g_clients[client].getStickerDefIndex(i, eItems_GetWeaponNumByDefIndex(weaponDefIndex), team)
+		int stickerDefIndex = g_clients[client].getStickerDefIndex(i, eItems_GetWeaponNumByDefIndex(weaponDefIndex), team);
 
-		                          if (stickerDefIndex == -1)
+		if (stickerDefIndex == -1)
 		{
 			Format(displayBuffer, sizeof(displayBuffer), "Slot %d - <empty>", i);
 			menu.AddItem(buffer, displayBuffer);
@@ -188,7 +188,7 @@ Menu CreateStickerSetsMenu(int client, int team, int weaponDefIndex, int pos)
 		char buffer[32];
 		char displayBuffer[32];
 
-		for (int set = 0; set < eItems_GetStickersSetsCount(); set++)    // FIXME: WTF
+		for (int set = 0; set < eItems_GetStickersSetsCount(); set++)
 		{
 			Format(buffer, sizeof(buffer), "set_%d_%d_%d_%d", team, weaponDefIndex, pos, set);
 			eItems_GetStickerSetDisplayNameByStickerSetNum(set, displayBuffer, sizeof(displayBuffer));
@@ -229,7 +229,7 @@ public int StickerSetsMenuHandler(Menu menu, MenuAction action, int client, int 
 		case MenuAction_Cancel:
 		{
 			if (IsClientInGame(client) && selection == MenuCancel_ExitBack)
-				CreateMainMenu(client).Display(client, 60);
+				CreateStickerMainMenu(client).Display(client, 60);
 		}
 		case MenuAction_End:
 		{
@@ -256,6 +256,7 @@ Menu CreateSetStickersMenu(int client, int team, int weaponDefIndex, int pos, in
 			{
 				Format(buffer, sizeof(buffer), "sticker_%d_%d_%d_%d_%d", team, weaponDefIndex, pos, setNum, sticker);
 				eItems_GetStickerDisplayNameByStickerNum(sticker, displayBuffer, sizeof(displayBuffer));
+				PrintToChat(client, buffer);
 				menu.AddItem(buffer, displayBuffer);
 			}
 		}
@@ -302,7 +303,7 @@ public int SetStickersMenuHandler(Menu menu, MenuAction action, int client, int 
 		case MenuAction_Cancel:
 		{
 			if (IsClientInGame(client) && selection == MenuCancel_ExitBack)
-				CreateMainMenu(client).Display(client, 60);
+				CreateStickerMainMenu(client).Display(client, 60);
 		}
 		case MenuAction_End:
 		{
