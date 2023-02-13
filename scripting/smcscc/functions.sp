@@ -49,42 +49,69 @@ void SetWeaponProps(int client, int entity)    // perfect
 	}
 }
 
-void SetWeaponStickers(int client, int entity)
+void SetWeaponSticker(int client, int entity)
 {
-	int weaponDefIndex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	int weapon         = GetEntProp(entity, Prop_Send, "m_hMyWeapons");
-
-	int slots = eItems_GetWeaponStickersSlotsByWeapon(weapon);
-
-	if (!eItems_IsValidWeapon(weapon) && slots <= 0)
-	{    // if weapon is not valid or has no stickers slots
-		return;
-	}
-
-	CEconItemView pItemView = PTaH_GetEconItemViewFromEconEntity(entity);     //FIXME: i dont know how to make this work with GetEntProp()
-
-	CAttributeList pAttributeList = pItemView.NetworkedDynamicAttributesForDemos;
-
-	for(int i = 0; i < slots; i++)
+	if (IsClientInGame(client) && !IsFakeClient(client) && IsValidEntity(entity))
 	{
-		int sticker = g_clients[client].getStickerDefIndex(GetClientTeam(client), weapon, i);
+		CEconItemView pItemView = PTaH_GetEconItemViewFromEconEntity(entity);
 
-		if (sticker != -1)
+		int defIndex = pItemView.GetItemDefinition().GetDefinitionIndex();
+
+		if (defIndex > 0)
 		{
-			pAttributeList.SetOrAddAttributeValue(113 + i * 4, sticker); // sticker slot %i id
-			
-			// if(g_PlayerWeapon[iClient][iIndex].m_wear[i] != 0.0)
-			// {
-			// 	pAttributeList.SetOrAddAttributeValue(114 + i * 4, g_PlayerWeapon[iClient][iIndex].m_wear[i]); // sticker slot %i wear
-			// }
-			
-			// if(g_PlayerWeapon[iClient][iIndex].m_rotation[i] != 0.0)
-			// {
-			// 	pAttributeList.SetOrAddAttributeValue(116 + i * 4, g_PlayerWeapon[iClient][iIndex].m_rotation[i]); // sticker slot %i rotation
-			// }
+			int iIndex = eItems_GetWeaponNumByDefIndex(defIndex);
+
+			if (iIndex != -1)
+			{
+				// Check if item is already initialized by external ws.
+				if (GetEntProp(entity, Prop_Send, "m_iItemIDHigh") < 16384)
+				{
+					static int IDHigh = 16384;
 					
+					SetEntProp(entity, Prop_Send, "m_iItemIDLow", -1);
+					SetEntProp(entity, Prop_Send, "m_iItemIDHigh", IDHigh++);
+				}
+
+				// Change stickers.
+				CAttributeList pAttributeList = pItemView.NetworkedDynamicAttributesForDemos;
+
+				bool bUpdated = false;
+
+				int slots = eItems_GetWeaponStickersSlotsByDefIndex(defIndex);
+				for (int i = 0; i < slots; i++)
+				{
+					int team = GetClientTeam(client);
+					int weaponNum = eItems_GetWeaponNumByDefIndex(defIndex);
+					int stickerDefIndex = g_clients[client].getStickerDefIndex(team, weaponNum, i)
+					PrintToChatAll("%d", stickerDefIndex);
+
+					if (stickerDefIndex != -1)
+					{
+						// Sticker updated.
+						bUpdated = true;
+
+						pAttributeList.SetOrAddAttributeValue(113 + i * 4, stickerDefIndex); // sticker slot %i id
+						
+						// if(g_PlayerWeapon[client][iIndex].m_wear[i] != 0.0)
+						// {
+						// 	pAttributeList.SetOrAddAttributeValue(114 + i * 4, g_PlayerWeapon[client][iIndex].m_wear[i]); // sticker slot %i wear
+						// }
+						
+						// if(g_PlayerWeapon[client][iIndex].m_rotation[i] != 0.0)
+						// {
+						// 	pAttributeList.SetOrAddAttributeValue(116 + i * 4, g_PlayerWeapon[client][iIndex].m_rotation[i]); // sticker slot %i rotation
+						// }
+					}
+				}
+
+				// Update viewmodel if enabled.
+				if (bUpdated)
+				{
+					PTaH_ForceFullUpdate(client);
+				}
+			}
 		}
-	}
+	}	
 }
 
 void RefreshSkin(int client, int weaponNum)

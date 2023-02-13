@@ -892,7 +892,7 @@ enum struct eClient
 	}
 
 	int setStickerDefIndex(int team, int weaponNum, int pos, int defIndex){
-		//if pos == 0 it will set all stickers
+		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
@@ -901,12 +901,9 @@ enum struct eClient
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < 0 || pos >= 5)
-			return -1;
-
-		if (pos == 0)
+		if (pos == -1)
 		{
-			for (int i = 1; i < 5; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				this.setStickerDefIndex(team, weaponNum, i, defIndex);
 			}
@@ -922,9 +919,9 @@ enum struct eClient
 			sticker.defIndex = defIndex;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsT.SetArray(weaponNum, weapon);
-			return 0;
 		}
-		else if (team == 0 || team == 3)
+
+		if (team == 0 || team == 3)
 		{
 			this.arWeaponsCT.GetArray(weaponNum, weapon);
 			eSticker sticker;
@@ -932,14 +929,13 @@ enum struct eClient
 			sticker.defIndex = defIndex;
 			weapon.arStickers.SetArray(pos, sticker);
 			this.arWeaponsCT.SetArray(weaponNum, weapon);
-			return 0;
 		}
-		
-		return -1;
+
+		return 0;
 	}
 
 	int setStickerWear(int team, int weaponNum, int pos, float wear){
-		//if pos == 0 it will set all stickers
+		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
@@ -948,12 +944,9 @@ enum struct eClient
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < 0 || pos >= 5)
-			return -1;
-
-		if (pos == 0)
+		if (pos == -1)
 		{
-			for (int i = 1; i < 5; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				this.setStickerWear(team, weaponNum, i, wear);
 			}
@@ -986,7 +979,7 @@ enum struct eClient
 	}
 
 	int setStickerRotation(int team, int weaponNum, int pos, int rotation){
-		//if pos == 0 it will set all stickers
+		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
 		if (team != 2 && team != 3)
@@ -995,10 +988,7 @@ enum struct eClient
 		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
-		if (pos < 0 || pos >= 5)
-			return -1;
-
-		if (pos == 0)
+		if (pos == -1)
 		{
 			for (int i = 1; i < 5; i++)
 			{

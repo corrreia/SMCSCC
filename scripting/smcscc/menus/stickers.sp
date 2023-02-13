@@ -31,34 +31,33 @@ Menu CreateStickerMainMenu(int client)
 	Menu menu = new Menu(StickerMainMenuHandler);
 	menu.SetTitle("Stickers for %s", buffer);
 
-	for (int i = 1; i < slots + 1; i++)
+	for (int i = 0; i < slots; i++)
 	{
 		Format(buffer, sizeof(buffer), "slot_%d_%d_%d", team, weaponDefIndex, i);
-		int stickerDefIndex = g_clients[client].getStickerDefIndex(i, eItems_GetWeaponNumByDefIndex(weaponDefIndex), team);
+		int stickerDefIndex = g_clients[client].getStickerDefIndex(team, eItems_GetWeaponNumByDefIndex(weaponDefIndex), i);
 
 		if (stickerDefIndex == -1)
 		{
-			Format(displayBuffer, sizeof(displayBuffer), "Slot %d - <empty>", i);
+			Format(displayBuffer, sizeof(displayBuffer), "Slot %d - <empty>", i+1);
 			menu.AddItem(buffer, displayBuffer);
 		}
 		else
 		{
 			char nameBuffer[32];
 			eItems_GetStickerDisplayNameByDefIndex(stickerDefIndex, nameBuffer, sizeof(nameBuffer));
-			Format(displayBuffer, sizeof(displayBuffer), "Slot %d - %s", i, nameBuffer);
+			Format(displayBuffer, sizeof(displayBuffer), "Slot %d - %s", i+1, nameBuffer);
 			menu.AddItem(buffer, displayBuffer);
 		}
 	}
 
-	// menu.AddItem("x", "", ITEMDRAW_SPACER);
-	Format(buffer, sizeof(buffer), "slot_%d_%d_0", team, weaponDefIndex);
+	Format(buffer, sizeof(buffer), "slot_%d_%d_-1", team, weaponDefIndex);
 	menu.AddItem(buffer, "All Stickers");
 
-	Format(buffer, sizeof(buffer), "wear_%d_%d_0", team, weaponDefIndex);
-	menu.AddItem(buffer, "Set Wear");
+	// Format(buffer, sizeof(buffer), "wear_%d_%d_0", team, weaponDefIndex);
+	// menu.AddItem(buffer, "Set Wear");
 
-	Format(buffer, sizeof(buffer), "rotation_%d_%d_0", team, weaponDefIndex);
-	menu.AddItem(buffer, "Set Rotation");
+	// Format(buffer, sizeof(buffer), "rotation_%d_%d_-0", team, weaponDefIndex);
+	// menu.AddItem(buffer, "Set Rotation");
 
 	menu.ExitBackButton = true;
 
@@ -120,10 +119,10 @@ Menu CreateStickersMenu(int client, int team, int weaponDefIndex, int pos)
 		menu.SetTitle("Sticker Menu", client);
 
 		Format(buffer, sizeof(buffer), "all_%d_%d_%d", team, weaponDefIndex, pos);
-		menu.AddItem("all", "All Stickers");
+		menu.AddItem(buffer, "All Stickers");
 
 		Format(buffer, sizeof(buffer), "search_%d_%d_%d", team, weaponDefIndex, pos);
-		menu.AddItem("search", "Search Stickers");
+		menu.AddItem(buffer, "Search Stickers");
 
 		menu.ExitBackButton = true;
 
@@ -167,7 +166,7 @@ public int StickersMenuHandler(Menu menu, MenuAction action, int client, int sel
 		case MenuAction_Cancel:
 		{
 			if (IsClientInGame(client) && selection == MenuCancel_ExitBack)
-				CreateMainMenu(client).Display(client, 60);
+				CreateStickerMainMenu(client).Display(client, 60);
 		}
 		case MenuAction_End:
 		{
@@ -256,7 +255,6 @@ Menu CreateSetStickersMenu(int client, int team, int weaponDefIndex, int pos, in
 			{
 				Format(buffer, sizeof(buffer), "sticker_%d_%d_%d_%d_%d", team, weaponDefIndex, pos, setNum, sticker);
 				eItems_GetStickerDisplayNameByStickerNum(sticker, displayBuffer, sizeof(displayBuffer));
-				PrintToChat(client, buffer);
 				menu.AddItem(buffer, displayBuffer);
 			}
 		}
@@ -288,13 +286,13 @@ public int SetStickersMenuHandler(Menu menu, MenuAction action, int client, int 
 				int weaponDefIndex = StringToInt(buffer2[2]);
 				int pos            = StringToInt(buffer2[3]);
 				int set            = StringToInt(buffer2[4]);
-				int sticker        = StringToInt(buffer2[5]);
-
-				// setStickerDefIndex(int team, int weaponNum, int pos, int defIndex)
-				g_clients[client].setStickerDefIndex(team, weaponDefIndex, pos, sticker);
+				int sticker        = eItems_GetStickerDefIndexByStickerNum(StringToInt(buffer2[5]));
 
 				int weaponNum = eItems_GetWeaponNumByDefIndex(weaponDefIndex);
-				PrintToChat(client, "%d", weaponNum);
+				g_clients[client].setStickerDefIndex(team, weaponNum, pos, sticker);
+
+				PrintToChat(client, "%d", g_clients[client].getStickerDefIndex(team, weaponNum, pos));
+
 				RefreshSkin(client, weaponNum);
 
 				CreateSetStickersMenu(client, team, weaponDefIndex, pos, set).Display(client, 60);
