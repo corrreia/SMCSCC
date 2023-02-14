@@ -295,6 +295,8 @@ public int SetStickersMenuHandler(Menu menu, MenuAction action, int client, int 
 
 				RefreshSkin(client, weaponNum);
 
+				PTaH_ForceFullUpdate(client); //so that the sticker is shown on the weapon
+
 				CreateSetStickersMenu(client, team, weaponDefIndex, pos, set).Display(client, 60);
 			}
 		}

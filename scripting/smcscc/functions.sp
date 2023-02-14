@@ -75,21 +75,15 @@ void SetWeaponSticker(int client, int entity)
 				// Change stickers.
 				CAttributeList pAttributeList = pItemView.NetworkedDynamicAttributesForDemos;
 
-				bool bUpdated = false;
-
 				int slots = eItems_GetWeaponStickersSlotsByDefIndex(defIndex);
 				for (int i = 0; i < slots; i++)
 				{
 					int team = GetClientTeam(client);
 					int weaponNum = eItems_GetWeaponNumByDefIndex(defIndex);
-					int stickerDefIndex = g_clients[client].getStickerDefIndex(team, weaponNum, i)
-					PrintToChatAll("%d", stickerDefIndex);
+					int stickerDefIndex = g_clients[client].getStickerDefIndex(team, weaponNum, i);
 
 					if (stickerDefIndex != -1)
 					{
-						// Sticker updated.
-						bUpdated = true;
-
 						pAttributeList.SetOrAddAttributeValue(113 + i * 4, stickerDefIndex); // sticker slot %i id
 						
 						// if(g_PlayerWeapon[client][iIndex].m_wear[i] != 0.0)
@@ -103,15 +97,9 @@ void SetWeaponSticker(int client, int entity)
 						// }
 					}
 				}
-
-				// Update viewmodel if enabled.
-				if (bUpdated)
-				{
-					PTaH_ForceFullUpdate(client);
-				}
 			}
 		}
-	}	
+	}
 }
 
 void RefreshSkin(int client, int weaponNum)
