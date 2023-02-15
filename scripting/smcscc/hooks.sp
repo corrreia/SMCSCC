@@ -220,5 +220,6 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 	if (IsValidClient(clientIndex))
 	{
 		RefreshGloves(clientIndex);
+		SetMusicKit(clientIndex);
 	}
 }

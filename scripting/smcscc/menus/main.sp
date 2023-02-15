@@ -2,6 +2,8 @@
 #include "knifes.sp"
 #include "gloves.sp"
 #include "stickers.sp"
+//#include "pins.sp"
+#include "music.sp"
 
 Menu CreateMainMenu(int client)
 {
@@ -22,8 +24,6 @@ Menu CreateMainMenu(int client)
 	menu.AddItem("music", "Music Kits");	// 5
 
 	menu.AddItem("agents", "Agents");	 // 6
-
-	menu.AddItem("patches", "Patches");	   // 7
 
 	menu.ExitButton = true;
 
@@ -62,15 +62,11 @@ public int MainMenuHandler(Menu menu, MenuAction action, int client, int selecti
 					}
 					case 5:
 					{
-						PrintToChat(client, "Music Kits");
+						CreateMusicMenu(client).Display(client, 60);
 					}
 					case 6:
 					{
 						PrintToChat(client, "Agents");
-					}
-					case 7:
-					{
-						PrintToChat(client, "Patches");
 					}
 				}
 			}
