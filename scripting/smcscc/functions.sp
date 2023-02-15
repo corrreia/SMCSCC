@@ -102,6 +102,19 @@ void SetWeaponSticker(int client, int entity)
 	}
 }
 
+void SetMusicKit(int client){
+	int defIndex = g_clients[client].getMusicKit();
+	if (defIndex != -1)
+	{
+		SetEntProp(client, Prop_Send, "m_unMusicID", defIndex);
+	}
+	else
+	{
+		SetEntProp(client, Prop_Send, "m_unMusicID", -1);
+		//SetEntData(client, g_ResetMusicKitFromInventoryOffset, 1, 1);
+	}
+}
+
 void RefreshSkin(int client, int weaponNum)
 {
 	int size = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");    // get the number of weapons the player has

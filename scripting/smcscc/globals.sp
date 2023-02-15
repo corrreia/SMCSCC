@@ -47,6 +47,7 @@ enum struct eClient
 	eGlove		 gloveCT;
 	int			 knifeTDefIndex;
 	int			 knifeCTDefIndex;
+	int 		 musicKitDefIndex;
 
 	eWaitingType waitingType;
 	int			 TN[2];	   // TD[0] = team, TD[1] = weaponnum
@@ -1020,6 +1021,16 @@ enum struct eClient
 		}
 
 		return -1;
+	}
+
+	//Music Kit
+
+	int getMusicKit(){
+		return this.musicKitDefIndex;
+	}
+
+	void setMusicKit(int defIndex){
+		this.musicKitDefIndex = defIndex;
 	}
 }
 
