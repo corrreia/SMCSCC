@@ -112,70 +112,6 @@ enum struct eClient
 		return true;
 	}
 
-	// bool setWeapon(int team, int weaponNum, int weaponDefIndex, int skinDefIndex, char[] nameTag,int nameTagSize, float floatValue, int seed, bool statTrak, int statTrakCount){
-	// 	//if team == 0 then do for both teams
-
-	// 	if (team != 0 && team != 2 && team != 3)
-	// 		return false;
-
-	// 	if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-	// 		return false;
-
-	// 	if (floatValue < 0.0 || floatValue > 1.0)
-	// 		return false;
-
-	// 	if (seed < 0 || seed > 65535)
-	// 		return false;
-
-	// 	if (statTrakCount < 0)
-	// 		return false;
-
-	// 	eWeapon weapon;
-	// 	weapon.weaponDefIndex = weaponDefIndex;
-	// 	weapon.skinDefIndex	  = skinDefIndex;
-	// 	CleanNameTag(nameTag, nameTagSize);
-	// 	strcopy(weapon.nameTag, sizeof(weapon.nameTag), nameTag);
-	// 	weapon.floatValue	  = floatValue;
-	// 	weapon.seed			  = seed;
-	// 	weapon.statTrak		  = statTrak;
-	// 	weapon.statTrakCount  = statTrakCount;
-
-	// 	if (team == 0 || team == 2)
-	// 		this.arWeaponsT.SetArray(weaponNum, weapon);
-
-	// 	if (team == 0 || team == 3)
-	// 		this.arWeaponsCT.SetArray(weaponNum, weapon);
-
-	// 	return true;
-	// }
-
-	// bool setGlove(int team, int gloveDefIndex, int skinDefIndex, float floatValue, int seed){
-	// 	//if team == 0 then do for both teams
-
-	// 	if (team != 0 && team != 2 && team != 3)
-	// 		return false;
-
-	// 	if (floatValue < 0.0 || floatValue > 1.0)
-	// 		return false;
-		
-	// 	if (seed < 0 || seed > 65535)
-	// 		return false;
-
-	// 	eGlove glove;
-	// 	glove.gloveDefIndex = gloveDefIndex;
-	// 	glove.skinDefIndex	= skinDefIndex;
-	// 	glove.floatValue	= floatValue;
-	// 	glove.seed			= seed;
-
-	// 	if (team == 0 || team == 2)
-	// 		this.gloveT = glove;
-
-	// 	if (team == 0 || team == 3)
-	// 		this.gloveCT = glove;
-
-	// 	return true;
-	// }
-
 	bool setKnifeDefIndex(int team, int knifeDefIndex){
 		//if team == 0 then do for both teams
 
@@ -192,21 +128,10 @@ enum struct eClient
 	}
 
 	bool setWaitingType(eWaitingType waitingType, int team = 0, int weaponNum = 0){
-		//if no weaponNum is given, it will be set to 0, but TYPE needs to be WAITING_GLOVE_SEED
-		if (weaponNum == 0 && waitingType != WAITING_GLOVE_SEED)
-			return false;	
-		
-		if (team != 2 && team != 3)
-			return false;
-		
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return false;
 
 		this.waitingType = waitingType;
 		this.TN[0]		 = team;
 		this.TN[1]		 = weaponNum;
-
-		PrintToChatAll("%d - %d", this.waitingType, waitingType)
 
 		return true;
 	}
@@ -216,30 +141,6 @@ enum struct eClient
 	int getSteamID64(char[] steamID64, int size){
 		return strcopy(steamID64, size, this.steamID64);
 	}
-
-	// int getWeapon(int team, int weaponNum , eWeapon weapon){
-	// 	if (team != 2 && team != 3)
-	// 		return -1;
-
-	// 	if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-	// 		return -1;
-
-	// 	if (team == 2)
-	// 		return this.arWeaponsT.GetArray(weaponNum, weapon);
-	// 	else
-	// 		return this.arWeaponsCT.GetArray(weaponNum, weapon);
-	// }
-
-	// int getGlove(int team, eGlove glove){
-	// 	if (team != 2 && team != 3)
-	// 		return -1;
-
-	// 	if (team == 2)
-	// 		glove = this.gloveT;
-	// 	else
-	// 		glove = this.gloveCT;
-	// 	return 1;
-	// }
 
 	int getKnifeDefIndex(int team){
 		if (team != 2 && team != 3)
@@ -271,9 +172,6 @@ enum struct eClient
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
-
 		eWeapon weapon;
 		if (team == 0 || team == 2)
 		{
@@ -296,9 +194,6 @@ enum struct eClient
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
-
 		eWeapon weapon;
 		if (team == 0 || team == 2)
 		{
@@ -319,9 +214,6 @@ enum struct eClient
 		//team can be 2 ,3 or 0, if 0 then it will be set for both teams
 
 		if (team != 0 && team != 2 && team != 3)
-			return -1;
-		
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
 		eWeapon weapon;
@@ -348,9 +240,6 @@ enum struct eClient
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
-
 		eWeapon weapon;
 		if (team == 0 || team == 2)
 		{
@@ -371,9 +260,6 @@ enum struct eClient
 		//team can be 2 ,3 or 0, if 0 then it will be set for both teams
 
 		if (team != 0 && team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
 		eWeapon weapon;
@@ -398,9 +284,6 @@ enum struct eClient
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
-
 		eWeapon weapon;
 		if (team == 0 || team == 2)
 		{
@@ -421,9 +304,6 @@ enum struct eClient
 		//team can be 2 ,3 or 0, if 0 then it will be set for both teams
 
 		if (team != 0 && team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
 		eWeapon weapon;
@@ -448,9 +328,6 @@ enum struct eClient
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
-
 		eWeapon weapon;
 		if (team == 0 || team == 2)
 		{
@@ -471,9 +348,6 @@ enum struct eClient
 		//team can be 2 ,3 or 0, if 0 then it will be set for both teams
 
 		if (team != 0 && team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
 		eWeapon weapon;
@@ -498,9 +372,6 @@ enum struct eClient
 
 		if (team != 0 && team != 2 && team != 3)
 			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
 		
 		eWeapon weaponT;
 		eWeapon weaponCT;
@@ -524,13 +395,8 @@ enum struct eClient
 	}
 
 	int getWeaponSkinDefIndex(int team, int weaponNum){
-		//if team is 0 it will check if both 
-		//teams have the same skin defindex, if not it will return -1
 
 		if (team != 0 && team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 		
 		eWeapon weaponT;
@@ -554,13 +420,7 @@ enum struct eClient
 			return -1;
 	}
 
-	int getWeaponNameTag(int team, int weaponNum, char nameTag[32], int length){
-
-		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1;
+	int getWeaponNameTag(int team, int weaponNum, char[] nameTag, int length){
 		
 		eWeapon weapon;
 		if (team == 2)
@@ -584,9 +444,6 @@ enum struct eClient
 		if (team != 2 && team != 3)
 			return -1.0;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1.0;
-
 		eWeapon weapon;
 		if (team == 2)
 		{
@@ -605,9 +462,6 @@ enum struct eClient
 	int getWeaponSeed(int team, int weaponNum){
 
 		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 		
 		eWeapon weapon;
@@ -628,9 +482,6 @@ enum struct eClient
 	bool getWeaponStatTrak(int team, int weaponNum){
 		if (team != 2 && team != 3)
 			return false;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return false;
 		
 		eWeapon weapon;
 		if (team == 2)
@@ -650,9 +501,6 @@ enum struct eClient
 	int getWeaponStatTrakCount(int team, int weaponNum){
 
 		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 		
 		eWeapon weapon;
@@ -836,9 +684,6 @@ enum struct eClient
 		if (team != 2 && team != 3)
 			return -1.0;
 
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
-			return -1.0;
-
 		if (pos < 0 || pos >= 5)
 			return -1.0;
 
@@ -864,9 +709,6 @@ enum struct eClient
 
 	int getStickerRotation(int team, int weaponNum, int pos){
 		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
 			return -1;
 
 		if (pos < 0 || pos >= 5)
@@ -896,10 +738,7 @@ enum struct eClient
 		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
-		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+		if (team != 2 && team != 3 && team != 0)
 			return -1;
 
 		if (pos == -1)
@@ -939,10 +778,7 @@ enum struct eClient
 		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
-		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+		if (team != 2 && team != 3 && team != 0)
 			return -1;
 
 		if (pos == -1)
@@ -983,10 +819,7 @@ enum struct eClient
 		//if pos == -1 it will set all stickers
 		//if team == 0 it will set all teams
 
-		if (team != 2 && team != 3)
-			return -1;
-
-		if (weaponNum < 0 || weaponNum >= eItems_GetWeaponCount())
+		if (team != 2 && team != 3 && team != 0)
 			return -1;
 
 		if (pos == -1)

@@ -21,7 +21,7 @@ public Plugin myinfo =
 	name        = "Super Mega CS:GO Skin Changer Collection",
 	author      = "Tomás Correia",
 	description = "All in one CS:GO items management",
-	version     = "0.0.3",
+	version     = "0.0.4",
 	url         = "https://github.com/corrreia/SMCSCC"
 };
 

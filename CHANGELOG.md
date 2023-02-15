@@ -1,5 +1,10 @@
 ## Release Notes
 
+## [0.0.4]
+
+### Fixed
+Bunch of bugs related to user input in chat.
+
 ## [0.0.3]
 
 ### Added

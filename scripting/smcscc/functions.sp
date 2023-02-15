@@ -20,8 +20,12 @@ void SetWeaponProps(int client, int entity)    // perfect
 		SetEntProp(entity, Prop_Send, "m_iItemIDLow", -1);
 		SetEntProp(entity, Prop_Send, "m_iItemIDHigh", IDHigh++);
 		SetEntProp(entity, Prop_Send, "m_nFallbackPaintKit", skinDefIndex);
-		SetEntPropFloat(entity, Prop_Send, "m_flFallbackWear", skinFloat == 0.0 ? 0.000001 : skinFloat == 1.0 ? 0.999999
-		                                                                                                      : skinFloat);
+		SetEntPropFloat(entity, Prop_Send, "m_flFallbackWear", skinFloat == 0.0 ? 0.000001 : skinFloat == 1.0 ? 0.999999 : skinFloat);
+
+		if (strlen(weaponTag) > 0)
+		{
+			SetEntDataString(entity, FindSendPropInfo("CBaseAttributableItem", "m_szCustomName"), weaponTag, 128);
+		}
 
 		if (skinSeed != -1)
 		{
@@ -37,11 +41,6 @@ void SetWeaponProps(int client, int entity)    // perfect
 
 		SetEntProp(entity, Prop_Send, "m_nFallbackStatTrak", statTrak ? statTrakCount : -1);
 		SetEntProp(entity, Prop_Send, "m_entityQuality", statTrak ? 9 : 0);
-
-		if (strlen(weaponTag) > 0)
-		{
-			SetEntDataString(entity, FindSendPropInfo("CBaseAttributableItem", "m_szCustomName"), weaponTag, 128);
-		}
 
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
