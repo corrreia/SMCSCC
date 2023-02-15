@@ -1,5 +1,15 @@
 ## Release Notes
 
+## [0.0.3]
+
+### Added
+Ability to change music kits.
+
+### Fixed
+Bug reloading stickers.
+
+<!-- ### Removed -->
+
 ## [0.0.2]
 
 ### Added
