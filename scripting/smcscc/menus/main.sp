@@ -4,6 +4,7 @@
 #include "stickers.sp"
 //#include "pins.sp"
 #include "music.sp"
+#include "agents.sp"
 
 Menu CreateMainMenu(int client)
 {
@@ -66,7 +67,7 @@ public int MainMenuHandler(Menu menu, MenuAction action, int client, int selecti
 					}
 					case 6:
 					{
-						PrintToChat(client, "Agents");
+						CreateAgentMenu(client).Display(client, 60);
 					}
 				}
 			}
