@@ -81,6 +81,8 @@ public int AgentCustomMenuHandler(Menu menu, MenuAction action, int client, int 
                 
                 eItems_GetAgentPlayerModelByDefIndex(agent, buffer, sizeof(buffer));
 
+                g_clients[client].setAgent(team, )
+
                 PrintToChat(client, "Agent: %s", buffer);
             }
         }

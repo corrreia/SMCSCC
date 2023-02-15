@@ -48,6 +48,8 @@ enum struct eClient
 	int			 knifeTDefIndex;
 	int			 knifeCTDefIndex;
 	int 		 musicKitDefIndex;
+	int agentT;
+	int agentCT;
 
 	eWaitingType waitingType;
 	int			 TN[2];	   // TD[0] = team, TD[1] = weaponnum
@@ -59,6 +61,10 @@ enum struct eClient
 		this.arWeaponsCT	 = new ArrayList(sizeof(eWeapon), eItems_GetWeaponCount());
 		this.knifeTDefIndex	 = 0;
 		this.knifeCTDefIndex = 0;
+		this.musicKitDefIndex = -1;
+		this.agentT = -1;
+		this.agentCT = -1;
+
 		this.waitingType	 = NONE;
 		this.TN				 = { 0, 0 };
 
@@ -864,6 +870,30 @@ enum struct eClient
 
 	void setMusicKit(int defIndex){
 		this.musicKitDefIndex = defIndex;
+	}
+
+	//Agent
+
+	int getAgent(int team){
+		if (team != 2 && team != 3)
+			return -1;
+
+		if (team == 2)
+			return this.agentT;
+		else if (team == 3)
+			return this.agentCT;
+
+		return -1;
+	}
+
+	void setAgent(int team, int defIndex){
+		if (team != 2 && team != 3)
+			return;
+
+		if (team == 2)
+			this.agentT = defIndex;
+		else if (team == 3)
+			this.agentCT = defIndex;
 	}
 }
 
